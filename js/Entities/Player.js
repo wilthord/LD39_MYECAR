@@ -24,7 +24,8 @@ PlayerClass = function(playerJson){		//Heredamos de la clase entidad
 	this.tiempoAturdido=0;
 
 	//Vida del jugador
-	this.energy = 100000;
+	this.energy = 5000;
+	this.maxEnergy = 5000;
 
 	//Tiempo inicial de la animación actual. este valor se cambia cada vez que se requiere cambiar la animacion (Cambio de estado)
 	this.animStartTime = (new Date()).getTime();    
@@ -52,7 +53,9 @@ PlayerClass = function(playerJson){		//Heredamos de la clase entidad
 	
 	var deltaTime = ((new Date()).getTime()-this.animStartTime);			//numero de milisegundos que pasaron desde la ultima actualizacion.
 	this.currSpriteName = gAnimController.getFrameSprite('carroAndando', deltaTime);
-	
+
+	this.sonidoActual = gSM.playSound("Conduciendo03", { loop: true, vol: 1 });
+
 }
 
 PlayerClass.prototype = Object.create(EntityClass.prototype);
@@ -60,10 +63,18 @@ PlayerClass.prototype.constructor = PlayerClass;
 
 PlayerClass.prototype.update = function(){
 
+	if(!this.isDead){
+		GE.distanciaRecorrida++;
+	}
+
 	if(this.energy<1){
 		this.isDead=true;
 		return;
+	}else if(this.energy>this.maxEnergy){
+		this.energy = this.maxEnergy;
 	}
+
+	var iniciaAcelerando = this.isAcelerando;
 
 	if(this.aturdido){
 
@@ -73,21 +84,16 @@ PlayerClass.prototype.update = function(){
 		if(this.tiempoAturdido<=0){
 			this.aturdido=false;
 			this.animStartTime = (new Date()).getTime();
+			this.sonidoActual.stop();
+			this.sonidoActual=gSM.playSound("Conduciendo03", { loop: true, vol: 1 });
 		}
 
 		//TODO: validar si se deberia afectar la velocidad
+		this.pos.x += this.velocidad;
 
 	}else{
 
-		//Validamos si hay acciones pendientes por ejecutar
-		if(gInputEngine.actions[MOV_ARRIBA]){
-			this.pos.y = this.pos.y - this.movimiento;
-			gInputEngine.actions[MOV_ARRIBA]=false;
-		}
-		if(gInputEngine.actions[MOV_ABAJO]){
-			this.pos.y = this.pos.y + this.movimiento;
-			gInputEngine.actions[MOV_ABAJO]=false;
-		}
+		
 
 		// TODO: Controlar la aceleración, para que sea progresiva proporcional a los Ticks
 		if(gInputEngine.actions[ACELERAR]){
@@ -112,9 +118,42 @@ PlayerClass.prototype.update = function(){
 			}
 		}
 
-	}
+		if(this.isAcelerando==true && iniciaAcelerando==false){
+			this.sonidoActual.stop();
+			this.sonidoActual=gSM.playSound("Conduciendo01", { loop: true, vol: 1 });
+		}else if(this.isAcelerando==false && iniciaAcelerando==true){
+			this.sonidoActual.stop();
+			this.sonidoActual=gSM.playSound("Conduciendo03", { loop: true, vol: 1 });
+		}
 
-	this.pos.x += this.velocidad;
+		this.pos.x += this.velocidad;
+
+		var posYAnterior = this.pos.y;
+
+		//Validamos si hay acciones pendientes por ejecutar
+		if(gInputEngine.actions[MOV_ARRIBA]){
+			this.pos.y = this.pos.y - this.movimiento;
+			if(this.pos.y<140){
+				this.pos.y = posYAnterior;
+			}
+			gInputEngine.actions[MOV_ARRIBA]=false;
+		}
+		if(gInputEngine.actions[MOV_ABAJO]){
+			this.pos.y = this.pos.y + this.movimiento;
+			if(this.pos.y>274){
+				this.pos.y = posYAnterior;
+			}
+			gInputEngine.actions[MOV_ABAJO]=false;
+		}
+
+		for (var i = 0; i < GE.listaEnemigos.length; i++) {
+			if( this.pos.x-16 > GE.listaEnemigos[i].pos.x - 16 && this.pos.x - 16 <= GE.listaEnemigos[i].pos.x + 16 && this.pos.y > GE.listaEnemigos[i].pos.y - 2 && this.pos.y < GE.listaEnemigos[i].pos.y + 2 ){
+				this.pos.y = posYAnterior;
+				break;
+			}
+		}
+
+	}
 
 	this.physBody.SetPosition(this.pos);
 	this.pos=this.physBody.GetPosition();
@@ -139,7 +178,7 @@ PlayerClass.prototype.update = function(){
 PlayerClass.prototype.draw = function(){
 	pintarSpriteCustom(this.currSpriteName, this.pos.x, this.pos.y, this.w, this.h, this.angulo);
 
-	this.pintarEnergia();
+	//this.pintarEnergia();
 
 }
 
@@ -156,7 +195,7 @@ PlayerClass.prototype.pintarEnergia = function() {
     GE.ctx.strokeStyle='#2397FF';
     GE.ctx.lineWidth=5;
     GE.ctx.moveTo((GE.camara.pos.x- GE.camara.offset.x)-50, (GE.camara.pos.y- GE.camara.offset.y)+64);
-    GE.ctx.lineTo((GE.camara.pos.x- GE.camara.offset.x)-50+(this.energy/10), (GE.camara.pos.y- GE.camara.offset.y)+64);
+    GE.ctx.lineTo((GE.camara.pos.x- GE.camara.offset.x)-50+(this.energy/50), (GE.camara.pos.y- GE.camara.offset.y)+64);
     GE.ctx.stroke();
     
 }
@@ -173,4 +212,7 @@ PlayerClass.prototype.aturdir = function() {
 	this.pos=this.physBody.GetPosition();
 	
 	this.tiempoAturdido = 60;
+
+	this.sonidoActual.stop();
+	this.sonidoActual = gSM.playSound("Aturdido01", { loop: true, vol: 1 });
 }

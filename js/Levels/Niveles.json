@@ -4,26 +4,19 @@
             "nombre": "InicioGUI",
             "mapa": "js/Maps/mapa01.json",
             "entidades": [
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 300, "sizeX": 124, "sizeY": 31, "GUIAction": "iniciarNivel", "spriteName": "Iniciar" }
+                { "type": "GUIEntityClass", "xIni": 400, "yIni": 350, "sizeX": 124, "sizeY": 31, "GUIAction": "iniciarNivel", "spriteName": "Iniciar" },
+                { "type": "GUIEntityClass", "xIni": 400, "yIni": 80, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "NombreJuego" },
+                { "type": "GUIEntityClass", "xIni": 730, "yIni": 570, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "Creditos" }
             ]
         },
         {
             "id": "PerdisteGUI",
             "nombre": "PerdisteGUI",
+            "mapa": "js/Maps/mapa01.json",
             "entidades": [
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 100, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "NombreJuego" },
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 300, "sizeX": 80, "sizeY": 44, "GUIAction": "", "spriteName": "GameOver" },
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 400, "sizeX": 71, "sizeY": 26, "GUIAction": "iniciarNivel", "spriteName": "Retry" }
-
-            ]
-        },
-        {
-            "id": "SuperadoGUI",
-            "nombre": "SuperadoGUI",
-            "entidades": [
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 100, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "NombreJuego" },
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 300, "sizeX": 73, "sizeY": 19, "GUIAction": "", "spriteName": "Great" },
-                { "type": "GUIEntityClass", "xIni": 255, "yIni": 400, "sizeX": 140, "sizeY": 26, "GUIAction": "iniciarNivel", "spriteName": "Next" }
+                { "type": "GUIEntityClass", "xIni": 400, "yIni": 350, "sizeX": 124, "sizeY": 31, "GUIAction": "iniciarNivel", "spriteName": "Iniciar" },
+                { "type": "GUIEntityClass", "xIni": 400, "yIni": 80, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "NombreJuego" },
+                { "type": "GUIEntityClass", "xIni": 730, "yIni": 570, "sizeX": 255, "sizeY": 160, "GUIAction": "", "spriteName": "Creditos" }
 
             ]
         },
@@ -33,106 +26,6 @@
             "mapa": "js/Maps/mapa01.json",
             "entidades": [
                 { "type": "PlayerClass", "xIni": 50, "yIni": 208, "velMin":2, "velMax":5, "aceleracion":2 }
-            ]
-        },
-        {
-            "id": 2,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 200, "yIni": 400, "velMin":10, "velMax":20, "aceleracion":2 },
-                { "type": "EnemyClass", "xIni": 0, "yIni": 176, "velMin":1, "velMax":6, "aceleracion":1 },
-                { "type": "CharcoClass", "xIni": 800, "yIni": 208},
-                { "type": "CarroDestruidoClass", "xIni": 1000, "yIni": 176},
-                { "type": "EnemyClass", "xIni": 0, "yIni": 176, "velMin":1, "velMax":6, "aceleracion":1 },
-                { "type": "EnergiaClass", "xIni": 800, "yIni": 208, "valorRecarga":100},
-                { "type": "EnergiaClass", "xIni": 1600, "yIni": 176, "valorRecarga":100},
-                { "type": "GuardianClass", "xIni": 400, "yIni": 400, "xDest": 300, "yDest": 200 },
-                { "type": "GuardianClass", "xIni": 100, "yIni": 100, "xDest": 300, "yDest": 300 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 200, "xDest": 200, "yDest": 300 },
-                { "type": "PilarClass", "xIni": 100, "yIni": 400 },
-                { "type": "PilarClass", "xIni": 400, "yIni": 100 },
-                { "type": "CristalClass", "xIni": 250, "yIni": 250 }
-            ]
-        },
-        {
-            "id": 3,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 450, "yIni": 450 },
-                { "type": "GuardianClass", "xIni": 450, "yIni": 50, "xDest": 400, "yDest": 100 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 250, "xDest": 300, "yDest": 250 },
-                { "type": "GuardianClass", "xIni": 50, "yIni": 350, "xDest": 300, "yDest": 350 },
-                { "type": "PilarClass", "xIni": 450, "yIni": 200 },
-                { "type": "PilarClass", "xIni": 50, "yIni": 200 },
-                { "type": "CristalClass", "xIni": 200, "yIni": 50 }
-            ]
-        },
-        {
-            "id": 4,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 450, "yIni": 450 },
-                { "type": "GuardianClass", "xIni": 350, "yIni": 100, "xDest": 200, "yDest": 200 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 250, "xDest": 400, "yDest": 250 },
-                { "type": "GuardianClass", "xIni": 100, "yIni": 150, "xDest": 300, "yDest": 350 },
-                { "type": "PilarClass", "xIni": 400, "yIni": 100 },
-                { "type": "PilarClass", "xIni": 100, "yIni": 100 },
-                { "type": "CristalClass", "xIni": 200, "yIni": 50 }
-            ]
-        },
-        {
-            "id": 5,
-            "nombre": "Inicio",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 300, "yIni": 300 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 100, "xDest": 300, "yDest": 100, "velocidad": 100 },
-                { "type": "GuardianClass", "xIni": 100, "yIni": 200, "xDest": 100, "yDest": 300, "velocidad": 50 },
-                { "type": "PilarClass", "xIni": 400, "yIni": 400 },
-                { "type": "PilarClass", "xIni": 250, "yIni": 250 },
-                { "type": "PilarClass", "xIni": 400, "yIni": 300 },
-                { "type": "CristalClass", "xIni": 250, "yIni": 250 }
-            ]
-        },
-        {
-            "id": 6,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 200, "yIni": 400 },
-                { "type": "GuardianClass", "xIni": 400, "yIni": 400, "xDest": 300, "yDest": 200 },
-                { "type": "GuardianClass", "xIni": 100, "yIni": 100, "xDest": 300, "yDest": 300 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 200, "xDest": 200, "yDest": 300 },
-                { "type": "PilarClass", "xIni": 100, "yIni": 500 },
-                { "type": "PilarClass", "xIni": 250, "yIni": 250 },
-                { "type": "PilarClass", "xIni": 500, "yIni": 100 },
-                { "type": "CristalClass", "xIni": 250, "yIni": 250 }
-            ]
-        },
-        {
-            "id": 7,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 450, "yIni": 450 },
-                { "type": "GuardianClass", "xIni": 450, "yIni": 50, "xDest": 400, "yDest": 100 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 250, "xDest": 300, "yDest": 250 },
-                { "type": "GuardianClass", "xIni": 50, "yIni": 350, "xDest": 300, "yDest": 350 },
-                { "type": "PilarClass", "xIni": 450, "yIni": 200 },
-                { "type": "PilarClass", "xIni": 250, "yIni": 250 },
-                { "type": "PilarClass", "xIni": 50, "yIni": 200 },
-                { "type": "CristalClass", "xIni": 200, "yIni": 50 }
-            ]
-        },
-        {
-            "id": 8,
-            "nombre": "Hide",
-            "entidades": [
-                { "type": "PlayerClass", "xIni": 450, "yIni": 450 },
-                { "type": "GuardianClass", "xIni": 350, "yIni": 100, "xDest": 200, "yDest": 200 },
-                { "type": "GuardianClass", "xIni": 200, "yIni": 250, "xDest": 400, "yDest": 250 },
-                { "type": "GuardianClass", "xIni": 100, "yIni": 150, "xDest": 300, "yDest": 350 },
-                { "type": "PilarClass", "xIni": 400, "yIni": 100 },
-                { "type": "PilarClass", "xIni": 250, "yIni": 250 },
-                { "type": "PilarClass", "xIni": 100, "yIni": 100 },
-                { "type": "CristalClass", "xIni": 200, "yIni": 50 }
             ]
         }
     ]

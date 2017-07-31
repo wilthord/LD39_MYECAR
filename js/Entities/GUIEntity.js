@@ -18,7 +18,7 @@ GUIEntityClass.prototype.constructor = GUIEntityClass;
 
 GUIEntityClass.prototype.update = function() {
     if (gInputEngine.actions[CLICK] && this.GUIAction !== "") {
-        if (gInputEngine.mouse.x >= this.pos.x && gInputEngine.mouse.y >= this.pos.y && gInputEngine.mouse.x <= (this.pos.x + this.sizeX) && gInputEngine.mouse.y <= (this.pos.y + this.sizeY)) {
+        if (gInputEngine.mouse.x >= this.pos.x-(this.sizeX/2) && gInputEngine.mouse.y >= this.pos.y-(this.sizeY/2) && gInputEngine.mouse.x <= this.pos.x + (this.sizeX/2) && gInputEngine.mouse.y <= this.pos.y + (this.sizeY/2)) {
             GUIControl.acciones[this.GUIAction]();
         }
     }

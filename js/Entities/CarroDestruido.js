@@ -43,6 +43,7 @@ CarroDestruidoClass.prototype.onTouch = function(otherBody, point, impulse){
     if(physOwner !== null && (physOwner instanceof PlayerClass || physOwner instanceof EnemyClass) ) {
             //this.contactos.push(physOwner);
             physOwner.isDead=true;
+            physOwner.sonidoActual.stop();
             GE.entities.push(new ExplosionClass({"xIni": physOwner.pos.x, "yIni": physOwner.pos.y}));
     }
 

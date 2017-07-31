@@ -120,7 +120,7 @@ SoundManager.prototype.playSound = function(soundName, settings) {
     currentClip.connect(gSM._mainNode);
     currentClip.start(0);
 
-    return true;
+    return currentClip;
 }
 
 Sound = function(soundName) {

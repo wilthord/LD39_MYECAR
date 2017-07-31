@@ -5,7 +5,7 @@ EnergiaClass = function(energiaJson){
 
     this.currSpriteName = "energia";
     
-    this.energiaRecarga = 100;
+    this.energiaRecarga = 1000;
 
     this.contactos = [];
     
@@ -44,6 +44,7 @@ EnergiaClass.prototype.onTouch = function(otherBody, point, impulse){
 
     if(physOwner !== null && (physOwner instanceof PlayerClass) ) {
             physOwner.energy += this.energiaRecarga;
+            gSM.playSound("Energia01", { loop: false, vol: 0.6 });
             this.isDead = true;
     }
 

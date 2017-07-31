@@ -1,3 +1,14 @@
 {
-    "sonidos": [    ]
+    "sonidos": [
+        { "name": "Conduciendo01", "path": "js/Sound/Conduciendo01.wav" },
+        { "name": "Conduciendo02", "path": "js/Sound/Conduciendo02.wav" },
+        { "name": "Conduciendo03", "path": "js/Sound/Conduciendo03.wav" },
+        { "name": "Explosion01", "path": "js/Sound/Explosion01.wav" },
+        { "name": "Explosion02", "path": "js/Sound/Explosion02.wav" },
+        { "name": "Explosion03", "path": "js/Sound/Explosion03.wav" },
+        { "name": "Aturdido01", "path": "js/Sound/Aturdido01.wav" },
+        { "name": "Energia01", "path": "js/Sound/Energia01.wav" },
+        { "name": "Perdiste", "path": "js/Sound/Perdiste.wav" }
+    
+    ]
 }

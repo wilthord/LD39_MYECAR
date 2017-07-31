@@ -49,6 +49,8 @@ EnemyClass = function(enemyJson){
 
     this.physBody = gPhysicsEngine.addBody(entityDef);
 
+	this.sonidoActual=gSM.playSound("Conduciendo02", { loop: true, vol: 1 });
+
 }
 
 EnemyClass.prototype = Object.create(EntityClass.prototype);
@@ -65,7 +67,9 @@ EnemyClass.prototype.update = function(){
 		this.tiempoAturdido--;
 
 		if(this.tiempoAturdido<=0){
-			this.aturdido=false;
+            this.aturdido=false;
+            this.sonidoActual.stop();
+	        this.sonidoActual=gSM.playSound("Conduciendo02", { loop: true, vol: 1 });
         }
         
         //this.velocidad=0.5;
@@ -82,18 +86,39 @@ EnemyClass.prototype.update = function(){
             
             this.esperaCarril = this.totalEsperaCarril;
 
+            var posYAnterior = this.pos.y;
+
             if(Math.abs(this.pos.y - GE.personaje.pos.y) >=0 && Math.abs(this.pos.y - GE.personaje.pos.y) <=4){
                 //Se encuentra en el mismo carril
-                //TODO: generar nueva posición aleatoriamente. validar que no se salga de la pista
+                //TODO: generar nueva posición aleatoriamente.
                 this.pos.y += 32;
+
+                if(this.pos.y>274){
+                    this.pos.y = posYAnterior - 32;
+                }
+
             }else if(this.pos.y - GE.personaje.pos.y < 0){
 
                 this.pos.y += 32;
-
+                
             }else{
                 this.pos.y -= 32;
+                
             }
+
+            for (var i = 0; i < GE.listaEnemigos.length; i++) {
+
+                if(GE.listaEnemigos[i]==this){
+                    continue;
+                }
+                if( this.pos.x-16 > GE.listaEnemigos[i].pos.x - 16 && this.pos.x - 16 <= GE.listaEnemigos[i].pos.x + 16 && this.pos.y > GE.listaEnemigos[i].pos.y - 2 && this.pos.y < GE.listaEnemigos[i].pos.y + 2 ){
+                    this.pos.y = posYAnterior;
+                    break;
+                }
+		    }
         }
+
+        var posXAnterior = this.pos.x;
 
         if(this.persiguiendo){
             if(this.pos.x < GE.personaje.pos.x){
@@ -175,7 +200,32 @@ EnemyClass.prototype.update = function(){
                 this.esperaCambio=this.totalEsperaCambio;
             }
         }
-        
+
+        if(this.pos.x < GE.personaje.pos.x && this.pos.x+16 > GE.personaje.pos.x - 16 && this.pos.x + 16 < GE.personaje.pos.x + 16 && this.pos.y > GE.personaje.pos.y - 2 && this.pos.y < GE.personaje.pos.y + 2 ){
+			this.pos.x = posXAnterior;
+		}else if( this.pos.x > GE.personaje.pos.x && this.pos.x-16 > GE.personaje.pos.x - 16 && this.pos.x - 16 <= GE.personaje.pos.x + 16 && this.pos.y > GE.personaje.pos.y - 2 && this.pos.y < GE.personaje.pos.y + 2 ){
+			this.pos.x = posXAnterior;
+		}else if( this.pos.x == GE.personaje.pos.x  && this.pos.y > GE.personaje.pos.y - 2 && this.pos.y < GE.personaje.pos.y + 2 ){
+			this.pos.x = posXAnterior;
+		} else{
+
+            for (var j = 0; j < GE.listaEnemigos.length; j++) {
+
+                if(GE.listaEnemigos[j]==this){
+                    continue;
+                }
+                if(this.pos.x < GE.listaEnemigos[j].pos.x && this.pos.x+16 > GE.listaEnemigos[j].pos.x - 16 && this.pos.x + 16 < GE.listaEnemigos[j].pos.x + 16 && this.pos.y > GE.listaEnemigos[j].pos.y - 2 && this.pos.y < GE.listaEnemigos[j].pos.y + 2 ){
+                    this.pos.x = GE.listaEnemigos[j].pos.x-34;
+                    break;
+                }else if( this.pos.x > GE.listaEnemigos[j].pos.x && this.pos.x-16 > GE.listaEnemigos[j].pos.x - 16 && this.pos.x - 16 <= GE.listaEnemigos[j].pos.x + 16 && this.pos.y > GE.listaEnemigos[j].pos.y - 2 && this.pos.y < GE.listaEnemigos[j].pos.y + 2 ){
+                    this.pos.x = GE.listaEnemigos[j].pos.x+34;
+                    break;
+                }else if( this.pos.x == GE.listaEnemigos[j].pos.x  && this.pos.y > GE.listaEnemigos[j].pos.y - 2 && this.pos.y < GE.listaEnemigos[j].pos.y + 2 ){
+                    this.pos.x = GE.listaEnemigos[j].pos.x-34;
+                    break;
+                }
+		    }
+        }
         if(this.pos.x == GE.personaje.pos.x && GE.personaje.energy>0){
             GE.personaje.energy -= this.absorver;
         }
@@ -205,5 +255,31 @@ EnemyClass.prototype.aturdir = function(){
     this.tiempoAturdido = 60;
 
     this.animStartTime = (new Date()).getTime();
+
+    this.sonidoActual.stop();
+	this.sonidoActual=gSM.playSound("Aturdido01", { loop: true, vol: 0.5 });
     
+}
+
+EnemyClass.prototype.onTouch = function(otherBody, point, impulse){
+
+    if(!otherBody.GetUserData()) return false;
+
+    var physOwner = otherBody.GetUserData().ent;    
+
+    if(physOwner !== null &&  physOwner instanceof EnemyClass ) {
+            this.destruir();
+            physOwner.destruir();
+    }
+
+    return true;
+}
+
+
+EnemyClass.prototype.destruir = function(){
+    if(!this.isDead){
+        this.isDead=true;
+        this.sonidoActual.stop();
+        GE.entities.push(new ExplosionClass({"xIni": this.pos.x, "yIni": this.pos.y}));
+    }
 }

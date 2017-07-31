@@ -4,7 +4,7 @@ stats.setMode(0); // 0: fps, 1: ms, 2: mb
 
 pisoSpriteName = "Piso";
 
-document.getElementById("divStats").appendChild(stats.domElement);
+//document.getElementById("divStats").appendChild(stats.domElement);
 /** Fin del codigo de estadisticas **/
 
 GameEngineClass = function() {
@@ -19,13 +19,15 @@ GameEngineClass = function() {
 
     this.entities = [];
 
+    this.listaEnemigos = [];
+
     this.personaje = {};
 
     this.marcaMouse = {};
 
     this.nombreCanvas = 'myCanvas';
 
-    this.enemySpawnTime = 600;
+    this.enemySpawnTime = 400;
 
     this.nextEnemySpawn = 0;
 
@@ -33,7 +35,7 @@ GameEngineClass = function() {
 
     this.nextObstaculoSpawn = 0;
 
-    this.energiaSpawnTime = 700;
+    this.energiaSpawnTime = 200;
 
     this.nextEnergiaSpawn = 0;
 
@@ -44,6 +46,10 @@ GameEngineClass = function() {
     this.isGUI = true;
 
     this.mapaActual = null;
+
+    this.distanciaRecorrida = 0;
+
+    this.mostrarDistancia = false;
 }
 
 GameEngineClass.prototype.setup = function() {
@@ -158,19 +164,28 @@ GameEngineClass.prototype.nivelSuperado = function() {
 }
 
 GameEngineClass.prototype.nivelPerdido = function() {
+    //gSM.stopAll();
+    gSM.playSound("Perdiste", { loop: false, vol: 0.4 });
     //alert("GameOver try again...");
-    this.nuevoGUI("InicioGUI");
+    this.mostrarDistancia = true;
+    this.nuevoGUI("PerdisteGUI");
     this.isGUI = true;
 }
 
 GameEngineClass.prototype.nuevoNivel = function() {
     var nivelCargar = niveles[this.nivelActual];
 
+    this.distanciaRecorrida = 0;
+
     //Limpiamos todo lo del nivel anterior
     for (var j = 0; j < this.entities.length; j++) {
         if (this.entities[j].physBody) gPhysicsEngine.removeBody(this.entities[j].physBody);
         this.entities.removeObj(this.entities[j]);
     }
+
+    gPhysicsEngine = null;
+    gPhysicsEngine = new PhysicsEngineClass();
+    this.setup();
 
     this.entities = [];
     this.personaje = {};
@@ -215,7 +230,19 @@ GameEngineClass.prototype.nuevoGUI = function(nombreGUI) {
     }
 
     //Limpiamos todo lo del nivel anterior
+    for (var k = 0; k < this.listaEnemigos.length; k++) {
+
+        if(this.listaEnemigos[k] instanceof EnemyClass && this.listaEnemigos[k].isDead==false){
+            this.listaEnemigos[k].sonidoActual.stop();
+        }
+
+    }
+    this.listaEnemigos = [];
     for (var j = 0; j < this.entities.length; j++) {
+        /*
+        if(this.entities[j] instanceof EnemyClass && this.entities[j].isDead==false){
+            this.entities[j].sonidoActual.stop();
+        }*/
         if (this.entities[j].physBody) gPhysicsEngine.removeBody(this.entities[j].physBody);
         this.entities.removeObj(this.entities[j]);
     }
@@ -283,6 +310,9 @@ GameEngineClass.prototype.updateGame = function() {
 
     for (var j = 0; j < entidadesEliminar.length; j++) {
         if (entidadesEliminar[j].physBody) gPhysicsEngine.removeBody(entidadesEliminar[j].physBody);
+        if(entidadesEliminar[j] instanceof EnemyClass){
+            this.listaEnemigos.removeObj(entidadesEliminar[j]);
+        }
         this.entities.removeObj(entidadesEliminar[j]);
     }
 
@@ -293,14 +323,6 @@ GameEngineClass.prototype.updateGame = function() {
 }
 
 GameEngineClass.prototype.drawGame = function() {
-
-    //Codigo para pintar el fondo a partir de un sprite
-    /*var pisoSprite = findSprite(pisoSpriteName);
-    for(var i=0;i<this.canvasSize.w; i+=pisoSprite.w){
-    	for(var j=0;j<this.canvasSize.h; j+=pisoSprite.h){
-    		pintarSprite(pisoSpriteName,i,j);
-    	}
-    }*/
 
     //Limpiamos el canvas
     this.ctx.clearRect(0, 0, this.canvasSize.w, this.canvasSize.h);
@@ -313,10 +335,83 @@ GameEngineClass.prototype.drawGame = function() {
         entidad.draw();
     });
 
+    this.drawGameUI();
+
     if (this.camara.debug) {
         this.camara.drawDebugCamara();
     }
 }
+
+GameEngineClass.prototype.drawGameUI = function() {
+
+    if (!this.isGUI) {
+
+        this.ctx.font = "20px Arial";
+        this.ctx.fillStyle = "#3632C2";
+        this.ctx.fillText("Power ",125, 355);
+
+        this.ctx.beginPath();
+        this.ctx.strokeStyle='#000000';
+        this.ctx.lineWidth=9;
+        this.ctx.moveTo(200, 350);
+        this.ctx.lineTo(320, 350);
+        this.ctx.stroke();
+
+        this.ctx.beginPath();
+        if(this.personaje.energy < this.personaje.maxEnergy * 0.2){
+            this.ctx.strokeStyle='#FF0004';
+        }else{
+            this.ctx.strokeStyle='#2397FF';
+        }
+        this.ctx.lineWidth=5;
+        this.ctx.moveTo(210, 350);
+        this.ctx.lineTo(210+(this.personaje.energy/50), 350);
+        this.ctx.stroke();
+
+        this.ctx.font = "bold 20px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText("Distance ",400, 355);
+
+        this.ctx.font = "26px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(Math.floor(this.distanciaRecorrida/32)+"'  ", 490, 358);
+
+    }else{
+
+        this.ctx.font = "18px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(" * You drive en electric car, Your goal is to travel a long distance",20, 400);
+
+        this.ctx.font = "18px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(" * The other cars will try to stand next to you to steal your energy",20, 430);
+
+        this.ctx.font = "18px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(" * They will focus on stealing your energy and will not be aware of the obstacles",20, 460);
+
+        this.ctx.font = "18px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(" * Take the batteries to avoid running out of power",20, 490);
+
+        this.ctx.font = "bold 20px Arial";
+        this.ctx.fillStyle = "#000000";
+        this.ctx.fillText(" Controls:  W -> Up,  S -> Down,  SpaceBar -> SpeedUp",20, 540);
+
+        if(this.mostrarDistancia){
+
+            this.ctx.font = "bold 36px Arial";
+            this.ctx.fillStyle = "#002F68";
+            this.ctx.fillText("Distance ",290, 221);
+
+            this.ctx.font = "bold 36px Arial";
+            this.ctx.fillStyle = "#002F68";
+            this.ctx.fillText(Math.floor(this.distanciaRecorrida/32)+"'  ", 460, 224);
+
+        }
+    } 
+}
+
 
 GameEngineClass.prototype.spawnEnemy = function() {
     
@@ -324,7 +419,9 @@ GameEngineClass.prototype.spawnEnemy = function() {
     var posY = (Math.floor(Math.random() * 5)*32) + 144;
     var posX = GE.camara.pos.x - (GE.camara.size.w/2) - 32;
     var tempEnemyData = {"xIni": posX, "yIni": posY, "velMin":1, "velMax":6, "aceleracion":1};
-    GE.entities.push(new EnemyClass(tempEnemyData));
+    var nuevoEnemigo = new EnemyClass(tempEnemyData);
+    GE.entities.push(nuevoEnemigo);
+    GE.listaEnemigos.push(nuevoEnemigo);
     
 }
 
