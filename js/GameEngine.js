@@ -380,7 +380,7 @@ GameEngineClass.prototype.drawGameUI = function() {
 
         this.ctx.font = "18px Arial";
         this.ctx.fillStyle = "#000000";
-        this.ctx.fillText(" * You drive en electric car, Your goal is to travel a long distance",20, 400);
+        this.ctx.fillText(" * You drive an electric car, Your goal is to travel the longest distance you can",20, 400);
 
         this.ctx.font = "18px Arial";
         this.ctx.fillStyle = "#000000";
